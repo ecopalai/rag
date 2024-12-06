@@ -1,0 +1,44 @@
+#!/bin/bash
+
+SCRIPT_NAME=$0
+BASE_DIR=$(cd $(dirname $0) && cd .. && pwd)
+
+main() {
+
+    # Create data folders if they don't exist
+    data_folders=("cassandra2/data" "langflow/postgres" "langflow/data" "langflow/config" "rag/data")
+
+    for folder in "${data_folders[@]}"; do
+        mkdir -p ${BASE_DIR}/data/${folder}
+    done
+
+    # Navigate to the scripts directory
+    cd ${BASE_DIR}/scripts
+
+    # Start or stop the containers based on the action provided
+    if [[ "$ACTION" = "start" ]]; then 
+        docker compose up -d
+    elif [[ "$ACTION" = "stop" ]]; then 
+        docker compose down
+    else
+        help
+        exit
+    fi
+}
+
+# Display help message for the script usage
+help() {
+    echo ""
+    echo "Usage ${SCRIPT_NAME} [start | stop]"
+    echo ""
+}
+
+# Default action is to stop the containers if no argument is provided
+ACTION="stop"
+
+# Main script starting point
+if [ $# -gt 0 ]; then
+    ACTION=$1
+fi
+
+main
