@@ -5,20 +5,23 @@ BASE_DIR=$(cd $(dirname $0) && cd .. && pwd)
 
 main() {
 
-    # Create data folders if they don't exist
-    data_folders=("cassandra2/data" "langflow/postgres" "langflow/data" "langflow/config" "rag/data")
-
-    for folder in "${data_folders[@]}"; do
-        mkdir -p ${BASE_DIR}/data/${folder}
-    done
-
     # Navigate to the scripts directory
     cd ${BASE_DIR}/scripts
 
     # Start or stop the containers based on the action provided
     if [[ "$ACTION" = "start" ]]; then 
+        # Create data folders if they don't exist
+        data_folders=("cassandra2" "langflow/postgres" "langflow/config")
+
+        for folder in "${data_folders[@]}"; do
+            mkdir -p ${BASE_DIR}/data/${folder}
+        done
+
+        # Starting docker containers
         docker compose up -d
+
     elif [[ "$ACTION" = "stop" ]]; then 
+        # Stopping docker containers
         docker compose down
     else
         help
