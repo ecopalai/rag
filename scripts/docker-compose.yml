@@ -24,7 +24,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - langflow_postgres:/var/lib/postgresql
+      - langflow_postgres:/var/lib/postgresql/data
     networks:
       - backend
 
