@@ -1,0 +1,88 @@
+name: ecopal
+
+services:
+  # Cassandra Database container to store the embeddings
+  cassandra2:
+    image: cassandra:latest
+    container_name: cassandra2
+    hostname: cassandra2
+    networks:
+      - backend
+    ports:
+      - "9042:9042"
+    volumes:
+      - data_cassandra2:/var/lib/cassandra
+
+  # Postgress Database container used for langflow
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_USER: langflow
+      POSTGRES_PASSWORD: langflow
+      POSTGRES_DB: langflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - langflow_postgres:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  # Langflow container
+  langflow:
+    image: langflowai/langflow:latest
+    container_name: langflow
+    ports:
+      - "7860:7860"
+    depends_on:
+      - postgres
+    environment:
+      - LANGFLOW_DATABASE_URL=postgresql://langflow:langflow@postgres:5432/langflow
+      # This variable defines where the logs, file storage, monitor data and secret keys are stored.
+      - LANGFLOW_CONFIG_DIR=/app/config
+      - LANGFLOW_DO_NOT_TRACK=true
+    volumes:
+      - langflow_config:/app/config
+    networks:
+      - backend
+    extra_hosts:
+      - host.docker.internal:host-gateway
+
+volumes:
+  # This is mounted as a volume for the Cassandra container. 
+  # The data folder should be created in the base rag folder before running docker compose up. 
+  # The data folder is used to store the embeddings data to Cassandra database.
+  # It's important to note that this data will persist even if the Cassandra container is removed or recreated. 
+  # This is useful for development and testing purposes, but in a production environment, you should use a more robust solution for data persistence.
+  data_cassandra2:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ../data/cassandra2
+  # This is mounted as a volume for the Postgres container. 
+  # The data folder should be created in the base rag folder before running docker compose up. 
+  # The data folder is used to store the langflow data to Postgres database. 
+  # It's important to note that this data will persist even if the Postgres container is removed or recreated. 
+  # This is useful for development and testing purposes, but in a production environment, you should use a more robust solution for data persistence.
+  langflow_postgres:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ../data/langflow/postgres
+  # This is mounted as a volume for the Langflow container. 
+  # The data folder should be created in the base rag folder before running docker compose up. 
+  # The data folder is used to store the langflow data to filesystem. 
+  # It's important to note that this data will persist even if the Langflow container is removed or recreated. 
+  # This is useful for development and testing purposes, but in a production environment, you should use a more robust solution for data persistence.
+  langflow_config:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ../data/langflow/config
+
+networks:
+  backend:
+    driver: bridge
