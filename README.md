@@ -5,6 +5,16 @@ Our RAG stack consits of the following docker containers: ollama, cassandra, lan
  1. Install docker desktop: https://docs.docker.com/desktop/install/windows-install/
  1. Create bridge network net1. All of our containers will be attached to this network. Open windows powershell and run the following command:  `docker network create -d bridge net1`
 
+## New Instruction as of Dec 17th, 2024
+ 1. Make sure you have the latest rag code from github repository
+ 1. Make sure that docker desktop is running
+ 1. Open VS code terminal. 
+ 1. cd scripts
+ 1. .\reg.bat start
+ 1. The above command will create the data folders and start the rag stack.
+ 1. From browser go to http://localhost:7860 to launch langflow.
+
+# Archived Old Instructions (Do not use this)
 ## ollama Setup
 1. Make sure docker desktop is running.
 1. Open powershell and cd to ollama folder of this project.
