@@ -87,3 +87,4 @@ networks:
   backend:
     driver: bridge
     name: backend
+    external: true
