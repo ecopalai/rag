@@ -12,7 +12,8 @@ if "%1"=="start" (
 
     set directory[0]="cassandra2"
     set directory[1]="langflow\postgres"
-    set directory[3]="langflow\config"
+    set directory[2]="langflow\config"
+    set directory[3]="crawler"
 
     REM Create all data directories if it doesn't exist
     for /L %%i in (0,1,%count%) do (

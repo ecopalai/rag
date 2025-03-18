@@ -48,6 +48,16 @@ services:
     extra_hosts:
       - host.docker.internal:host-gateway
 
+  crawler:
+    build: 
+      context: ../data_source/website_crawler
+    container_name: crawler
+    hostname: crawler
+    volumes:
+      - crawler_data:/app/data
+    networks:
+      - backend
+
 volumes:
   # This is mounted as a volume for the Cassandra container. 
   # The data folder should be created in the base rag folder before running docker compose up. 
@@ -83,8 +93,15 @@ volumes:
       type: none
       device: ../data/langflow/config
 
+  crawler_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ../data/crawler
+
 networks:
   backend:
     driver: bridge
     name: backend
-    external: true
+
