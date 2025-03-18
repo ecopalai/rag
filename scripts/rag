@@ -11,7 +11,7 @@ main() {
     # Start or stop the containers based on the action provided
     if [[ "$ACTION" = "start" ]]; then 
         # Create data folders if they don't exist
-        data_folders=("cassandra2" "langflow/postgres" "langflow/config")
+        data_folders=("cassandra2" "langflow/postgres" "langflow/config" "crawler")
 
         for folder in "${data_folders[@]}"; do
             mkdir -p ${BASE_DIR}/data/${folder}
